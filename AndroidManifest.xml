@@ -71,6 +71,14 @@ Permissions.
                       android:resource="@xml/authenticator" />
         </service>
 
+        <service android:name=".authentication.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                       android:resource="@xml/authenticator" />
+        </service>
+
         <provider
                 android:name=".ServerContentProvider"
                 android:authorities="edu.wcu.cs.agora.FriendFinder"

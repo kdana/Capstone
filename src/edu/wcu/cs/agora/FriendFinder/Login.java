@@ -1,7 +1,6 @@
 package edu.wcu.cs.agora.FriendFinder;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import android.accounts.*;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,11 +26,14 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * Code for functionality on the log in page.
  */
-public class Login extends Activity implements View.OnClickListener
+public class Login extends android.accounts.AccountAuthenticatorActivity implements View.OnClickListener
 {
     private String authority;
     private Button loginButton;
     private Button registerButton;
+    private AccountManager accountManager;
+    private String authTokenType;
+    private final int REQ_SIGNUP = 1;
 
     /**
      * Called when the activity is first created. Boilerplate code.
@@ -42,6 +44,14 @@ public class Login extends Activity implements View.OnClickListener
         Log.d("LOGIN", "OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        // Initialize account manager and token type
+        accountManager = AccountManager.get(getBaseContext());
+        String accountName = getIntent().getStringExtra(Constants.ARG_ACCOUNT_NAME);
+        String authTokenType = getIntent().getStringExtra(Constants.ARG_AUTH_TYPE);
+        if (authTokenType == null) {
+            authTokenType = Constants.AUTHTOKEN_TYPE_FULL_ACCESS;
+        }
 
         //get the login and register buttons from the layout
         loginButton    = (Button) findViewById(R.id.login);
@@ -118,32 +128,40 @@ public class Login extends Activity implements View.OnClickListener
     public void onClick(View view) {
 
         if (view.getId() == R.id.login) {
-            //get username and password
-            String username = String.valueOf(((EditText) findViewById(R.id.email)).getText());
-            String password = String.valueOf(((EditText) findViewById(R.id.pass)).getText());
-
-            //send to server
-            NetworkHandler handler = new NetworkHandler();
-            handler.send(this, "user=" + username + " pass=" + password);
+            //request token from server
+            submit();
 
         } else {
-            Intent intent = new Intent(this, Register.class);
-            startActivity(intent);
+            Intent register = new Intent(this, Register.class);
+            register.putExtras(getIntent().getExtras());
+            startActivityForResult(register, REQ_SIGNUP);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        //If user has entered credentials on register page
+        if (requestCode == REQ_SIGNUP && resultCode == RESULT_OK) {
+            finishLogin(data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     public void submit() {
+        // get username and password
         final String username = ((EditText) findViewById(R.id.email)).getText().toString();
         final String password = ((EditText) findViewById(R.id.pass)).getText().toString();
         new AsyncTask<Void, Void, Intent>() {
             @Override
             protected Intent doInBackground(Void... params) {
-                String mAuthTokenType = "login";
-                String authtoken = sServerAuthenticate.userSignIn(username, password, mAuthTokenType);
+                // get authentication token from the server
+                String authtoken = Constants.server.signIn(username, password, "login");
                 final Intent res = new Intent();
                 res.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
-                res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ARG_ACCOUNT_TYPE);
                 res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
-                res.putExtra(PARAM_USER_PASS, password);
+                res.putExtra(Constants.ARG_USER_PASS, password);
                 return res;
             }
 
@@ -157,17 +175,17 @@ public class Login extends Activity implements View.OnClickListener
 
     private void finishLogin(Intent intent) {
         String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        String accountPassword = intent.getStringExtra(PARAM_USER_PASS);
+        String accountPassword = intent.getStringExtra(Constants.ARG_USER_PASS);
         final Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
-        if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
+        if (getIntent().getBooleanExtra(Constants.ARG_ADDING_NEW_ACCOUNT, false)) {
             String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
-            String authtokenType = mAuthTokenType;
+            String authtokenType = "login";
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
-            mAccountManager.addAccountExplicitly(account, accountPassword, null);
-            mAccountManager.setAuthToken(account, authtokenType, authtoken);
+            accountManager.addAccountExplicitly(account, accountPassword, null);
+            accountManager.setAuthToken(account, authtokenType, authtoken);
         } else {
-            mAccountManager.setPassword(account, accountPassword);
+            accountManager.setPassword(account, accountPassword);
         }
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);

@@ -1,6 +1,7 @@
 package edu.wcu.cs.agora.FriendFinder;
 
 import android.accounts.*;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +10,11 @@ import android.text.TextUtils;
  * Created by Karen on 11/17/2014.
  */
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
+
+    public AccountAuthenticator(Context context) {
+        super(context);
+    }
+
     @Override
     public Bundle editProperties(AccountAuthenticatorResponse accountAuthenticatorResponse, String s) {
         return null;
