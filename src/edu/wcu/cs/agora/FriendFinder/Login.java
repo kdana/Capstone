@@ -4,12 +4,14 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import com.google.android.gms.identity.intents.AddressConstants;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -121,5 +123,47 @@ public class Login extends Activity implements View.OnClickListener
             Intent intent = new Intent(this, Register.class);
             startActivity(intent);
         }
+    }
+    public void submit() {
+        final String username = ((EditText) findViewById(R.id.email)).getText().toString();
+        final String password = ((EditText) findViewById(R.id.pass)).getText().toString();
+        new AsyncTask<Void, Void, Intent>() {
+            @Override
+            protected Intent doInBackground(Void... params) {
+                String mAuthTokenType = "login";
+                String authtoken = sServerAuthenticate.userSignIn(username, password, mAuthTokenType);
+                final Intent res = new Intent();
+                res.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
+                res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+                res.putExtra(PARAM_USER_PASS, password);
+                return res;
+            }
+
+            @Override
+            protected void onPostExecute(Intent intent) {
+                finishLogin(intent);
+            }
+        }.execute();
+
+    }
+
+    private void finishLogin(Intent intent) {
+        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        String accountPassword = intent.getStringExtra(PARAM_USER_PASS);
+        final Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
+        if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
+            String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+            String authtokenType = mAuthTokenType;
+            // Creating the account on the device and setting the auth token we got
+            // (Not setting the auth token will cause another call to the server to authenticate the user)
+            mAccountManager.addAccountExplicitly(account, accountPassword, null);
+            mAccountManager.setAuthToken(account, authtokenType, authtoken);
+        } else {
+            mAccountManager.setPassword(account, accountPassword);
+        }
+        setAccountAuthenticatorResult(intent.getExtras());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
