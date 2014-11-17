@@ -3,6 +3,9 @@ package edu.wcu.cs.agora.FriendFinder;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +43,9 @@ public class Login extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        //get the login and register buttons from the layout
+        loginButton    = (Button) findViewById(R.id.login);
+        registerButton = (Button) findViewById(R.id.register);
         //set handler for login and register buttons
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
@@ -117,7 +123,8 @@ public class Login extends Activity implements View.OnClickListener
             String password = String.valueOf(((EditText) findViewById(R.id.pass)).getText());
 
             //send to server
-
+            NetworkHandler handler = new NetworkHandler();
+            handler.send(this, "user=" + username + " pass=" + password);
 
         } else {
             Intent intent = new Intent(this, Register.class);
