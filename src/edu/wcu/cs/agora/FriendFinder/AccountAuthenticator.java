@@ -11,8 +11,11 @@ import android.text.TextUtils;
  */
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
+    private Context context;
+
     public AccountAuthenticator(Context context) {
         super(context);
+        this.context = context;
     }
 
     @Override
@@ -22,10 +25,10 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
-        intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, accountType);
-        intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
-        intent.putExtra(AuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
+        final Intent intent = new Intent(context, Login.class);
+        intent.putExtra(Constants.ARG_ACCOUNT_TYPE, accountType);
+        intent.putExtra(Constants.ARG_AUTH_TYPE, authTokenType);
+        intent.putExtra(Constants.ARG_ADDING_NEW_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -42,7 +45,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
         // Extract the username and password from the Account Manager, and ask
         // the server for an appropriate AuthToken.
-        final AccountManager am = AccountManager.get(mContext);
+        final AccountManager am = AccountManager.get(context);
 
         String authToken = am.peekAuthToken(account, authTokenType);
 
@@ -50,7 +53,11 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
-                authToken = sServerAuthenticate.userSignIn(account.name, password, authTokenType);
+                try {
+                    authToken = Constants.server.signIn(account.name, password, authTokenType);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -66,10 +73,10 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         // If we get here, then we couldn't access the user's password - so we
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
-        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        final Intent intent = new Intent(context, Login.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-        intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, account.type);
-        intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
+        intent.putExtra(Constants.ARG_ACCOUNT_TYPE, account.type);
+        intent.putExtra(Constants.ARG_AUTH_TYPE, authTokenType);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
         return bundle;

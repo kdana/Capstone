@@ -19,5 +19,5 @@ public class Constants {
     public static final String AUTHTOKEN_TYPE_READ_ONLY = "Read only";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
 
-    public static final ServerAuthenticate server = new ServerAuthenticate();
+    public static final ServerAuthentication server = new ServerAuthentication();
 }
