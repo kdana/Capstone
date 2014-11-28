@@ -8,7 +8,7 @@ require "sequel"
 # Version 27 November 2014
 ##
 
-db = Sequel.connect(:adapter=>"mysql", :user=>"root", :password=>"(*snowtiger*)",
+db = Sequel.connect(:adapter=>"mysql", :user=>"ff_user", :password=>"yWb5DoeEA5Rt",
                      :host=>"localhost", :database=>"friendfinder")
 
 # Create the users table
