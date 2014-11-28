@@ -1,9 +1,13 @@
 require "rubygems"
 require "sequel"
 
-# Connect to database
-#db = Sequel.connect(:adapter=>"mysql", :user=>"ff_user", :password=>"yWb5DoeEA5Rt",
-#                     :host=>"kartemis.no-ip.org", :database=>"friendfinder")
+##
+# Connects to the database and creates the tables if they don't exist
+#
+# Author: Karen Dana
+# Version 27 November 2014
+##
+
 db = Sequel.connect(:adapter=>"mysql", :user=>"root", :password=>"(*snowtiger*)",
                      :host=>"localhost", :database=>"friendfinder")
 
