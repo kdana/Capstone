@@ -32,17 +32,17 @@ public class Register extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         //get the input from the edit texts in the layout
         String user        = ((EditText) findViewById(R.id.email)).getText().toString();
-        String pass        = ((EditText) findViewById(R.id.email)).getText().toString();
-        String confirmPass = ((EditText) findViewById(R.id.email)).getText().toString();
+        String pass        = ((EditText) findViewById(R.id.pass)).getText().toString();
+        String confirmPass = ((EditText) findViewById(R.id.repeat_pass)).getText().toString();
 
         //TODO: check if username is unique
 
         //make sure the passwords are the same
         if (pass.equals(confirmPass)) {
             //save username in preferences
-            SharedPreferences settings = getSharedPreferences(Constants.SETTINGS, MODE_PRIVATE);
+            SharedPreferences settings = getSharedPreferences(Constants.ARG_SETTINGS, MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString(Constants.USERNAME, user);
+            editor.putString(Constants.ARG_USERNAME, user);
             editor.commit();
 
             // save password in file

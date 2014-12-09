@@ -6,6 +6,8 @@ import android.os.IBinder;
 
 /**
  * Created by Karen on 11/17/2014.
+ *
+ * http://udinic.wordpress.com/2013/04/24/write-your-own-android-authenticator/
  */
 public class AuthenticatorService extends Service {
     @Override

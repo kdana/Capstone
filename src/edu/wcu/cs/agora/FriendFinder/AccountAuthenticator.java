@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * Created by Karen on 11/17/2014.
+ *
+ * http://udinic.wordpress.com/2013/04/24/write-your-own-android-authenticator/
  */
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
@@ -56,6 +59,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 try {
                     authToken = Constants.server.signIn(account.name, password, authTokenType);
                 } catch (Exception e) {
+                    Log.e("Error", "Error occurred while trying to sign in " + e.getMessage());
                     e.printStackTrace();
                 }
             }

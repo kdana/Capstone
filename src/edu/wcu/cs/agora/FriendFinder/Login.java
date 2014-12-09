@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.android.gms.identity.intents.AddressConstants;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +37,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
     private final int REQ_SIGNUP = 1;
 
     /**
-     * Called when the activity is first created. Boilerplate code.
+     * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -46,12 +47,12 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         setContentView(R.layout.login);
 
         // Initialize account manager and token type
-        accountManager = AccountManager.get(getBaseContext());
-        String accountName = getIntent().getStringExtra(Constants.ARG_ACCOUNT_NAME);
-        String authTokenType = getIntent().getStringExtra(Constants.ARG_AUTH_TYPE);
-        if (authTokenType == null) {
-            authTokenType = Constants.AUTHTOKEN_TYPE_FULL_ACCESS;
-        }
+        //accountManager = AccountManager.get(getBaseContext());
+        //String accountName = getIntent().getStringExtra(Constants.ARG_ACCOUNT_NAME);
+        //String authTokenType = getIntent().getStringExtra(Constants.ARG_AUTH_TYPE);
+        //if (authTokenType == null) {
+        //    authTokenType = Constants.AUTHTOKEN_TYPE_FULL_ACCESS;
+        //}
 
         //get the login and register buttons from the layout
         loginButton    = (Button) findViewById(R.id.login);
@@ -60,25 +61,25 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
 
-        authority = getResources().getString(R.string.authority);
-        Intent intent = new Intent(this, SyncService.class);
+        //authority = getResources().getString(R.string.authority);
+        //Intent intent = new Intent(this, SyncService.class);
 
-        startService(intent);
-        startService(new Intent(this, GenericAccountService.class));
+        //startService(intent);
+        //startService(new Intent(this, GenericAccountService.class));
 
 
-        ContentResolver.setSyncAutomatically(GenericAccountService.getAccount(), authority, true);
-        final AtomicReference<Account> account = new AtomicReference<>(CreateSyncAccount(this));
+        //ContentResolver.setSyncAutomatically(GenericAccountService.getAccount(), authority, true);
+        //final AtomicReference<Account> account = new AtomicReference<>(CreateSyncAccount(this));
 
-        final Bundle extras = new Bundle();
-        Runnable r = new Runnable()
-        {
+//        final Bundle extras = new Bundle();
+        //Runnable r = new Runnable()
+        //{
             /**
              * Starts executing the active part of the class' code. This method is called when a
              * thread is
              * started that has been created with a class which implements {@code Runnable}.
              */
-            @Override
+        /**    @Override
             public void run ()
             {
                 ContentResolver.requestSync(account.get(), authority, extras);
@@ -87,6 +88,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         };
         Handler handler = new Handler();
         handler.postDelayed(r, 5000);
+*/
     }
 
     /**
@@ -129,12 +131,20 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
 
         if (view.getId() == R.id.login) {
             //request token from server
-            submit();
+            //submit();
+            // get username and password
+            final String username = ((EditText) findViewById(R.id.email)).getText().toString();
+            final String password = ((EditText) findViewById(R.id.pass)).getText().toString();
+            Toast mismatch = Toast.makeText(this, "Username" + username, Toast.LENGTH_SHORT);
+            mismatch.show();
+            mismatch = Toast.makeText(this, "Password" + password, Toast.LENGTH_SHORT);
+            mismatch.show();
 
         } else {
             Intent register = new Intent(this, Register.class);
-            register.putExtras(getIntent().getExtras());
-            startActivityForResult(register, REQ_SIGNUP);
+            //register.putExtras(getIntent().getExtras());
+            startActivity(register);
+            //startActivityForResult(register, REQ_SIGNUP);
         }
     }
 
@@ -156,12 +166,18 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
             @Override
             protected Intent doInBackground(Void... params) {
                 // get authentication token from the server
-                String authtoken = Constants.server.signIn(username, password, "login");
-                final Intent res = new Intent();
-                res.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
-                res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ARG_ACCOUNT_TYPE);
-                res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
-                res.putExtra(Constants.ARG_USER_PASS, password);
+                Intent res = null;
+                try {
+                    String authtoken = Constants.server.signIn(username, password, "login");
+                    res = new Intent();
+                    res.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
+                    res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ARG_ACCOUNT_TYPE);
+                    res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+                    res.putExtra(Constants.ARG_USER_PASS, password);
+                } catch (Exception e){
+                    Log.e("Error", "Could not sign in to server " + e.getMessage());
+                    e.printStackTrace();
+                }
                 return res;
             }
 

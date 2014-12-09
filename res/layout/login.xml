@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Tyler Allen
-Last Updated: 09/29/14
+Karen Dana
+Last Updated: 11/20/14
 Log in page.
 -->
 
@@ -12,190 +12,97 @@ Log in page.
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="100"
-              android:background="@color/purple">
+              android:weightSum="8"
+              android:padding="20dp"
+              android:background="@color/lt_green">
 
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="8"/>
-
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="13"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
         <!-- placeholder until we get a graphic -->
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="@string/f1"
-                android:textSize="60sp"
-                android:textColor="@color/gold"
+                android:textSize="45sp"
+                android:textColor="@color/white"
                 android:id="@+id/friend"
-                android:layout_weight="55"/>
+                android:textStyle="bold"
+                android:paddingLeft="30dp"
+                android:layout_weight="1.5" />
 
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="13"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="38"/>
-        <!-- placeholder until we get a graphic -->
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="@string/f2"
-                android:textSize="60sp"
-                android:textColor="@color/gold"
+                android:textSize="45sp"
+                android:textColor="@color/white"
                 android:id="@+id/finder"
-                android:layout_weight="55"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="6"/>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
+                android:textStyle="bold"
+                android:paddingLeft="100dp"
+                android:layout_weight="1.5"/>
 
         <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:inputType="textEmailAddress"
                 android:ems="10"
+                android:background="@color/white"
                 android:id="@+id/email"
+                android:layout_margin="10dp"
                 android:hint="@string/email"
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
-                android:layout_weight="60"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
+                android:layout_weight="1"/>
 
         <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:inputType="textPassword"
+                android:background="@color/white"
                 android:ems="10"
                 android:id="@+id/pass"
+                android:layout_margin="10dp"
                 android:hint="@string/pass"
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
-                android:layout_weight="60"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="30"/>
+                android:layout_weight="1"/>
 
         <!-- replace with custom buttons -->
         <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="40"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:id="@+id/login"
                 android:clickable="true"
+                android:layout_gravity="center"
                 android:scaleType="centerInside"
+                android:textSize="15sp"
                 android:text="Log In"/>
+                <!--android:layout_marginLeft="100dp"-->
+                <!--android:layout_marginRight="100dp"-->
                 <!--android:background="@drawable/button1"-->
 
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="4"/>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="20"/>
-
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:ems="10"
                 android:hint="@string/missing_acc"
+                android:textColorHint="@color/dk_grey"
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
-                android:layout_weight="60"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="30"/>
+                android:layout_weight="1"/>
 
         <!-- replace with custom buttons -->
         <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="40"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:id="@+id/register"
+                android:layout_gravity="center"
                 android:clickable="true"
+                android:textSize="15sp"
                 android:scaleType="centerInside"
                 android:text="@string/register"/>
         <!--android:background="@drawable/button1"-->
-
-
-    </LinearLayout>
-
 </LinearLayout>
