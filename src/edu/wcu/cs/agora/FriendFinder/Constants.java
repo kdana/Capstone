@@ -9,7 +9,7 @@ public class Constants {
     public static final String ARG_ADDING_NEW_ACCOUNT = "new account";
     public static final String ARG_AUTH_TYPE = "authorization";
     public static final String ARG_ACCOUNT_TYPE = "account type";
-    public static final String ARG_ACCOUNT_NAME = "email";
+    public static final String ARG_ACCOUNT_EMAIL = "email";
     public static final String KEY_ERROR_MESSAGE = "error message";
     public static final String ARG_SETTINGS = "settings";
     public static final String ARG_USERNAME = "username";

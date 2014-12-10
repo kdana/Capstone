@@ -1,23 +1,16 @@
 package edu.wcu.cs.agora.FriendFinder;
 
-import android.accounts.*;
-import android.app.Activity;
-import android.content.ContentResolver;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.identity.intents.AddressConstants;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Tyler Allen
@@ -47,7 +40,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         setContentView(R.layout.login);
 
         // Initialize account manager and token type
-        //accountManager = AccountManager.get(getBaseContext());
+        accountManager = AccountManager.get(getBaseContext());
         //String accountName = getIntent().getStringExtra(Constants.ARG_ACCOUNT_NAME);
         //String authTokenType = getIntent().getStringExtra(Constants.ARG_AUTH_TYPE);
         //if (authTokenType == null) {
@@ -131,14 +124,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
 
         if (view.getId() == R.id.login) {
             //request token from server
-            //submit();
-            // get username and password
-            final String username = ((EditText) findViewById(R.id.email)).getText().toString();
-            final String password = ((EditText) findViewById(R.id.pass)).getText().toString();
-            Toast mismatch = Toast.makeText(this, "Username" + username, Toast.LENGTH_SHORT);
-            mismatch.show();
-            mismatch = Toast.makeText(this, "Password" + password, Toast.LENGTH_SHORT);
-            mismatch.show();
+            submit();
 
         } else {
             Intent register = new Intent(this, Register.class);
@@ -160,37 +146,48 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
 
     public void submit() {
         // get username and password
-        final String username = ((EditText) findViewById(R.id.email)).getText().toString();
+        final String email = ((EditText) findViewById(R.id.email)).getText().toString();
         final String password = ((EditText) findViewById(R.id.pass)).getText().toString();
-        new AsyncTask<Void, Void, Intent>() {
-            @Override
-            protected Intent doInBackground(Void... params) {
-                // get authentication token from the server
-                Intent res = null;
-                try {
-                    String authtoken = Constants.server.signIn(username, password, "login");
-                    res = new Intent();
-                    res.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
-                    res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ARG_ACCOUNT_TYPE);
-                    res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
-                    res.putExtra(Constants.ARG_USER_PASS, password);
-                } catch (Exception e){
-                    Log.e("Error", "Could not sign in to server " + e.getMessage());
-                    e.printStackTrace();
+
+        if (email.equals("")) {
+            Toast missing = Toast.makeText(this, "Please enter your email address.",
+                                           Toast.LENGTH_SHORT);
+            missing.show();
+        } else if (password.equals("")){
+            Toast missing = Toast.makeText(this, "Please enter your password.", Toast.LENGTH_SHORT);
+            missing.show();
+        } else {
+            new AsyncTask<Void, Void, Intent>() {
+                @Override
+                protected Intent doInBackground(Void... params) {
+                    // get authentication token from the server
+                    Log.d("Authentication", "Beginning Authentication");
+                    Intent res = null;
+                    try {
+                        String authtoken = Constants.server.signIn(email, password, "login");
+                        res = new Intent();
+                        res.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
+                        res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ARG_ACCOUNT_TYPE);
+                        res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+                        res.putExtra(Constants.ARG_USER_PASS, password);
+                    } catch (Exception e) {
+                        Log.e("Error", "Could not sign in to server " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                    return res;
                 }
-                return res;
-            }
 
 
-            //send to server
-            NetworkHandler handler = new NetworkHandler();
-            handler.send(this, "user=" + username + "&pass=" + password);
+                //send to server
+//            NetworkHandler handler = new NetworkHandler();
+//            handler.send(this, "user=" + username + "&pass=" + password);
 
-            @Override
-            protected void onPostExecute(Intent intent) {
-                finishLogin(intent);
-            }
-        }.execute();
+                @Override
+                protected void onPostExecute(Intent intent) {
+                    finishLogin(intent);
+                }
+            }.execute();
+        }
 
     }
 
