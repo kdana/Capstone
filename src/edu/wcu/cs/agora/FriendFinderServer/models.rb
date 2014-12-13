@@ -1,4 +1,4 @@
-#!/bin/ruby
+#!/usr/bin/ruby
 
 ##
 # Brings together tables and models for the database
@@ -13,3 +13,7 @@ require_relative 'models/user'
 require_relative 'models/meeting'
 require_relative 'models/interest'
 require_relative 'models/circle'
+
+# Tests to ensure database is working
+#puts User.first.inspect
+#puts User.last.inspect

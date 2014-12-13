@@ -17,7 +17,7 @@ class User < Sequel::Model
     # Each user defines their own circles
     one_to_many :circles
     # Each of those circles contain multiple users, and each user can be in multiple circles
-    many_to_many :circlees, :class=>:Circle, :key=>:user_id, :join_table=>:ciclees
+    many_to_many :circles, :class=>:Circle, :key=>:user_id, :join_table=>:circlees
     # Each user can have multiple interests they like 
     # and each interest can have multiple people like it
     many_to_many :likes, :class=>:Interest, :key=>:user_id, :join_table=>:likes

@@ -7,7 +7,7 @@
 
 class Circle < Sequel::Model
     # Many members can be in a circle, and each member can be in many circles
-    many_to_many :circlees, :class=>:User, :key=>:circle_id, :join_table => :circlees
+    many_to_many :users, :class=>:User, :key=>:circle_id, :join_table => :circlees
     # Each circle is created by a user
     many_to_one :owner, :class=>:User, :key=>:circle_id
 end
