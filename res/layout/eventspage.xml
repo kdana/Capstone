@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Tyler Allen
-Last Updated: 09/29/14
+Karen Dana
+Last Updated: 11/30/14
 Dynamically generated page representing an event.
 -->
 
@@ -10,153 +10,67 @@ Dynamically generated page representing an event.
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="100"
-              android:background="@color/purple">
+              android:weightSum="6"
+              android:padding="20dp"
+              android:background="@color/lt_green">
 
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="8"/>
-
-
-    <LinearLayout
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="13"
-            android:weightSum="100">
+            android:text="@string/eventname"
+            android:textSize="50sp"
+            android:textColor="@color/white"
+            android:id="@+id/friend"
+            android:layout_weight="1"
+            android:gravity="center"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/timedate"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:layout_weight="1"/>
+
+    <LinearLayout android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:orientation="horizontal"
+              android:weightSum="3"
+              android:layout_weight="1" >
 
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/eventname"
-                android:textSize="50sp"
-                android:textColor="@color/gold"
-                android:id="@+id/friend"
-                android:layout_weight="100"
-                android:gravity="center"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="8"/>
-
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"/>
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/timedate"
-                android:textSize="30sp"
-                android:textColor="@color/gold"
-                android:layout_weight="100"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="8"/>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"/>
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:text="@string/location"
                 android:textSize="30sp"
-                android:textColor="@color/gold"
-                android:layout_weight="60"/>
+                android:textColor="@color/white"
+                android:layout_weight="2"/>
 
-        <!-- Placeholder for maps icon -->
+            <!-- Placeholder for maps icon -->
         <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="30"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
                 android:text="Map"/>
                 <!--android:background="@drawable/go"-->
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/location"
-                android:textSize="40sp"
-                android:textColor="@color/gold"
-                android:layout_weight="60"
-                android:gravity="center"/>
-
     </LinearLayout>
 
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="8"/>
-
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"/>
-
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="@string/information"
                 android:textSize="30sp"
-                android:textColor="@color/gold"
-                android:layout_weight="90"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"
-            android:weightSum="100">
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="8"/>
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
 
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="@string/placeholder_message"
                 android:textSize="20sp"
-                android:textColor="@color/gold"
-                android:layout_weight="92"/>
-
-    </LinearLayout>
-
-
-
-
-
+                android:textColor="@color/white"
+                android:layout_weight="2"/>
 </LinearLayout>

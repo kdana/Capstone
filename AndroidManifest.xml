@@ -71,7 +71,7 @@ Permissions.
                       android:resource="@xml/authenticator" />
         </service>
 
-        <service android:name=".authentication.AuthenticatorService">
+        <service android:name=".AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>

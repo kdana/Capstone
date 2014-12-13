@@ -7,14 +7,17 @@ Event creation page.
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:weightSum="10">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    android:background="@color/black">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="Create Event"
-        android:textColor="@color/gold"
+        android:textColor="@color/white"
         android:textSize="60dp"
         android:gravity="center"
         android:id="@+id/textView"
