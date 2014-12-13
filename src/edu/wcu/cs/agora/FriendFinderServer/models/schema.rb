@@ -19,7 +19,7 @@ db.create_table? :users do
     String       :password_hash, :null => false
     String       :password_salt, :null => false
     File         :picture
-    Integer      :age,           :null => false
+    Integer      :age
     String       :gender
     String       :description
     Integer      :busy

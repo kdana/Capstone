@@ -55,10 +55,9 @@ class Server < Sinatra::Base
 
 
     # Creates a user with the given required information
-    get '/create/user/:name/:email/:password/:age' do |name, email, password, age|
+    get '/create/user/:name/:email/:password/' do |name, email, password|
         # TODO: generate random salt and hash and salt password
-        User.create(:name=>name, :email=>email, :password_hash=>password, 
-                    :password_salt=>"1234", :age=>age)
+        User.create(:name=>name, :email=>email, :password_hash=>password, :password_salt=>"1234")
     end
 
     # Creates a meeting with the given required information
