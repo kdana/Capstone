@@ -46,6 +46,8 @@ Permissions.
         </activity>
         <activity android:name=".Register"/>
         <activity android:name=".Settings"/>
+        <activity android:name=".Profile"/>
+        <activity android:name=".Home"/>
         <activity android:name=".Privacy"/>
         <activity android:name=".EventsPage"/>
 
@@ -61,7 +63,7 @@ Permissions.
                        android:resource="@xml/syncadapter" />
         </service>
 
-        <service android:name=".GenericAccountService">
+        <service android:name=".Authentication.GenericAccountService">
             <!-- Required filter used by the system to launch our account service. -->
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -71,7 +73,7 @@ Permissions.
                       android:resource="@xml/authenticator" />
         </service>
 
-        <service android:name=".AuthenticatorService">
+        <service android:name=".Authentication.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>

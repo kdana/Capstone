@@ -1,13 +1,9 @@
 package edu.wcu.cs.agora.FriendFinderServer;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Scanner;
 
 /**
@@ -48,7 +44,7 @@ public class RequestServer
 
     public static void main(String[] args)
     {
-        System.setProperty("javax.net.ssl.keyStore", "../keystore");
+        System.setProperty("javax.net.ssl.keyStore", "res/raw/keystore");
         System.setProperty("javax.net.ssl.keyStorePassword", "hadouken!");
         RequestServer requestServer = null;
         try

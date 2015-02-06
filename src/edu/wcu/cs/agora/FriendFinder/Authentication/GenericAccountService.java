@@ -1,4 +1,4 @@
-package edu.wcu.cs.agora.FriendFinder;
+package edu.wcu.cs.agora.FriendFinder.Authentication;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

@@ -2,9 +2,12 @@ package edu.wcu.cs.agora.FriendFinder;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import edu.wcu.cs.agora.FriendFinder.Authentication.ServerAuthentication;
+
 public class Constants {
     public static final LatLng CULLOWHEE = new LatLng(35.3113624, -83.1819903);
     public static final int MAP_ZOOM = 13;
+    public static final String PREFERENCES_NAME = "Preferences";
     public static final String ARG_USER_PASS = "password";
     public static final String ARG_ADDING_NEW_ACCOUNT = "new account";
     public static final String ARG_AUTH_TYPE = "authorization";

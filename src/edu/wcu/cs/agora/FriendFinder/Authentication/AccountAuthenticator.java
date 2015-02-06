@@ -1,4 +1,4 @@
-package edu.wcu.cs.agora.FriendFinder;
+package edu.wcu.cs.agora.FriendFinder.Authentication;
 
 import android.accounts.*;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
+import edu.wcu.cs.agora.FriendFinder.Constants;
+import edu.wcu.cs.agora.FriendFinder.Login;
 
 /**
  * Created by Karen on 11/17/2014.

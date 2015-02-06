@@ -19,6 +19,6 @@ public class EventsPage extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.eventspage);
+        setContentView(R.layout.event_page);
     }
 }

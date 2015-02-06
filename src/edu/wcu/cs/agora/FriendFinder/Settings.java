@@ -2,7 +2,7 @@ package edu.wcu.cs.agora.FriendFinder;
 
 import android.app.Activity;
 import android.os.Bundle;
-import edu.wcu.cs.agora.FriendFinder.R;
+import android.widget.TextView;
 
 /**
  * Tyler Allen
@@ -13,6 +13,7 @@ import edu.wcu.cs.agora.FriendFinder.R;
 
 public class Settings extends Activity
 {
+    private TextView privacy;
 
     /**
      * Currently the default onCreate.

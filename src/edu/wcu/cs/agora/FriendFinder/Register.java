@@ -2,12 +2,19 @@ package edu.wcu.cs.agora.FriendFinder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
 
 /**
  * Created by tyler on 9/26/14.
@@ -21,6 +28,7 @@ public class Register extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        SSLCert.nuke();
 
         //Get the button from the layout
         signUpButton = (Button) findViewById(R.id.sign_up);
@@ -28,28 +36,47 @@ public class Register extends Activity implements View.OnClickListener {
         signUpButton.setOnClickListener(this);
     }
 
+    public void makeMessage(String message) {
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
     @Override
     public void onClick(View v) {
         //get the input from the edit texts in the layout
-        String user        = ((EditText) findViewById(R.id.email)).getText().toString();
+        String email       = ((EditText) findViewById(R.id.email)).getText().toString();
         String pass        = ((EditText) findViewById(R.id.pass)).getText().toString();
         String confirmPass = ((EditText) findViewById(R.id.repeat_pass)).getText().toString();
 
-        //TODO: check if username is unique
-
         //make sure the passwords are the same
         if (pass.equals(confirmPass)) {
-            //save username in preferences
-            SharedPreferences settings = getSharedPreferences(Constants.ARG_SETTINGS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(Constants.ARG_USERNAME, user);
-            editor.commit();
+            //send data to server to create user
+            //Log.d("Java", "Splitting email by @ sign");
+            String name = email.split("@")[0];
+            int age = 99;
 
-            // save password in file
+            // url to request response from
+            String url = Constants.URL + "/create/user/" + name + "/" + email +
+                                                     "/" + pass + "/" + age;
+            // Request a string response from the provided URL.
+            StringRequest request = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener() {
+                        @Override
+                        public void onResponse(Object obj) {
+                            makeMessage("Response: " + (String) obj);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    makeMessage(error.getMessage());
+                }
+            });
+            // Add request to queue
+            //Log.d("Connection", "Creating new user");
+            MySingleton.getInstance(this).addToRequestQueue(request);
 
-            // send to server
-
-            //continue to the screen after login
+            //continue to the home screen
+            Log.d("Moving on", "Going to home screen");
             Intent nextScreen = new Intent(this, Home.class);
             startActivity(nextScreen);
 

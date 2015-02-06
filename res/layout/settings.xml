@@ -98,6 +98,7 @@ A user's general app settings.
                 android:textSize="40sp"
                 android:layout_weight="80"
                 android:gravity="center"
+                android:clickable="true"
                 android:text="@string/privacy_settings"/>
 
     </LinearLayout>

@@ -4,13 +4,20 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
 
 /**
  * Tyler Allen
@@ -28,6 +35,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
     private AccountManager accountManager;
     private String authTokenType;
     private final int REQ_SIGNUP = 1;
+    private SharedPreferences settings;
 
     /**
      * Called when the activity is first created.
@@ -38,6 +46,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         Log.d("LOGIN", "OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        SSLCert.nuke();
 
         // Initialize account manager and token type
         accountManager = AccountManager.get(getBaseContext());
@@ -53,6 +62,9 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         //set handler for login and register buttons
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
+
+        // Get the Shared Preferences
+        settings = getSharedPreferences(Constants.PREFERENCES_NAME, MODE_WORLD_READABLE);
 
         //authority = getResources().getString(R.string.authority);
         //Intent intent = new Intent(this, SyncService.class);
@@ -144,6 +156,11 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
         }
     }
 
+    public void makeMessage(String message) {
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     public void submit() {
         // get username and password
         final String email = ((EditText) findViewById(R.id.email)).getText().toString();
@@ -154,10 +171,36 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
                                            Toast.LENGTH_SHORT);
             missing.show();
         } else if (password.equals("")){
-            Toast missing = Toast.makeText(this, "Please enter your password.", Toast.LENGTH_SHORT);
+            Toast missing = Toast.makeText(this, "Please enter your password.", Toast.LENGTH_LONG);
             missing.show();
         } else {
-            new AsyncTask<Void, Void, Intent>() {
+
+            // url to request response from
+            String url = Constants.URL + "/user/email/" + email;
+            // Request a string response from the provided URL.
+            StringRequest request = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener() {
+                        @Override
+                        public void onResponse(Object obj) {
+                            makeMessage("Response: " + (String) obj);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    makeMessage(error.getMessage());
+                }
+            });
+            // Add request to queue
+            MySingleton.getInstance(this).addToRequestQueue(request);
+
+            //continue to the home screen
+            Log.d("Moving on", "Going to home screen");
+            Intent nextScreen = new Intent(this, Home.class);
+            startActivity(nextScreen);
+
+
+
+        /**    new AsyncTask<Void, Void, Intent>() {
                 @Override
                 protected Intent doInBackground(Void... params) {
                     // get authentication token from the server
@@ -187,6 +230,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
                     finishLogin(intent);
                 }
             }.execute();
+         */
         }
 
     }
