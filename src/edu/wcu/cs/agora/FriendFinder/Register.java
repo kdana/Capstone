@@ -68,7 +68,8 @@ public class Register extends Activity implements View.OnClickListener {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    makeMessage(error.getMessage());
+                    makeMessage("Error: Could not connect to server");
+                    Log.e("Server Error", error.getMessage());
                 }
             });
             // Add request to queue
@@ -77,7 +78,8 @@ public class Register extends Activity implements View.OnClickListener {
 
             //continue to the home screen
             Log.d("Moving on", "Going to home screen");
-            Intent nextScreen = new Intent(this, Home.class);
+            //Intent nextScreen = new Intent(this, Home.class);
+            Intent nextScreen = new Intent(this, Profile.class);
             startActivity(nextScreen);
 
         } else {
