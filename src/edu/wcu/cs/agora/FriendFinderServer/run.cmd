@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo /home/kdana/bin/thin -R config.ru -p 443 --ssl --ssl-key /home/kdana/ssl/server.key --ssl-cert /home/kdana/ssl/server.crt start
