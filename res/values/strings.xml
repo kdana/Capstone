@@ -8,9 +8,7 @@ String reference file.
 
 
 <resources>
-    <string name="app_name">FriendFinder</string>
-    <string name="f1">Friend</string>
-    <string name="f2">Finder</string>
+    <string name="app_name">Tomokumo</string>
     <string name="email">Email Address</string>
     <string name="pass">Password</string>
     <string name="repeat_pass">Confirm Password</string>
