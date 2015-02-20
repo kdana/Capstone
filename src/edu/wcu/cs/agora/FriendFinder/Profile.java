@@ -24,14 +24,16 @@ import org.json.JSONObject;
 public class Profile extends Activity implements View.OnClickListener {
 
     private String[] friends;
-
+    private int user_id;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
+
+
         //get id of the user that was selected and add it to the url
-        int user_id = 1;
+        user_id = savedInstanceState.getInt("user_id");
         String url = Constants.URL + "/user/" + user_id;
 
         // Request the user's data from the server
@@ -69,8 +71,10 @@ public class Profile extends Activity implements View.OnClickListener {
         Button profileButton = (Button) findViewById(R.id.profileButton);
         ImageView picture = (ImageView) findViewById(R.id.picture);
 
-        // unset user_id
-        int user_id = -1;
+        //unset user id
+        int id = -1;
+
+        String type = "";
 
         // Set the information for the given user
         try {
@@ -82,7 +86,14 @@ public class Profile extends Activity implements View.OnClickListener {
             // get the id of the profile owner
             // get the list of people in the user's circle
             String[] friends = getFriends();
-            user_id = response.getInt("id");
+            id = response.getInt("id");
+
+
+            if (id == user_id) {
+                type = "owner";
+            } else {
+                type = "user";
+            }
 
         } catch (JSONException e) {
             makeMessage("Could not display user data");
@@ -93,7 +104,6 @@ public class Profile extends Activity implements View.OnClickListener {
         schedule.setOnClickListener(this);
         profileButton.setOnClickListener(this);
 
-        String type = "owner";
         String text = "";
         switch (type) {
             case "owner":

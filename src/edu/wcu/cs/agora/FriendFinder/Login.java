@@ -15,9 +15,12 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Tyler Allen
@@ -36,6 +39,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
     private String authTokenType;
     private final int REQ_SIGNUP = 1;
     private SharedPreferences settings;
+    private int user_id;
 
     /**
      * Called when the activity is first created.
@@ -177,7 +181,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
 
             // url to request response from
             String url = Constants.URL + "/user/email/" + email;
-            // Request a string response from the provided URL.
+/*            // Request a string response from the provided URL.
             StringRequest request = new StringRequest(Request.Method.GET, url,
                     new Response.Listener() {
                         @Override
@@ -190,14 +194,36 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
                     makeMessage("Error: Could not connect to server");
                     Log.e("Server Error", error.getMessage());
                 }
-            });
+            });*/
+            // Request the user's data from the server
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener() {
+                        @Override
+                        public void onResponse(Object response) {
+                            try {
+                                user_id = ((JSONObject) response).getInt("user_id");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            makeMessage("Error: Could not connect to server");
+                            Log.e("Server Error", error.getMessage());
+                        }
+                    });
             // Add request to queue
-            MySingleton.getInstance(this).addToRequestQueue(request);
+            MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+            // Add request to queue
+            //MySingleton.getInstance(this).addToRequestQueue(request);
 
             //continue to the home screen
             Log.d("Moving on", "Going to home screen");
             //Intent nextScreen = new Intent(this, Home.class);
             Intent nextScreen = new Intent(this, Profile.class);
+            nextScreen.putExtra("user_id", user_id);
             startActivity(nextScreen);
 
 

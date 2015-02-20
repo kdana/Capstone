@@ -12,9 +12,12 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by tyler on 9/26/14.
@@ -23,6 +26,7 @@ import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
 public class Register extends Activity implements View.OnClickListener {
 
     Button signUpButton;
+    private int user_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,10 +80,33 @@ public class Register extends Activity implements View.OnClickListener {
             //Log.d("Connection", "Creating new user");
             MySingleton.getInstance(this).addToRequestQueue(request);
 
+
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener() {
+                        @Override
+                        public void onResponse(Object response) {
+                            try {
+                                user_id = ((JSONObject) response).getInt("user_id");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            makeMessage("Error: Could not connect to server");
+                            Log.e("Server Error", error.getMessage());
+                        }
+                    });
+            // Add request to queue
+            MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+
             //continue to the home screen
             Log.d("Moving on", "Going to home screen");
             //Intent nextScreen = new Intent(this, Home.class);
             Intent nextScreen = new Intent(this, Profile.class);
+            nextScreen.putExtra("user_id", user_id);
             startActivity(nextScreen);
 
         } else {
