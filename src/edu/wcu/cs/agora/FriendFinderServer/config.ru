@@ -1,3 +1,6 @@
-# config.ru
-require './test'
-run HelloWorld
+require_relative './server.rb'
+
+run Server
+#.run!
+#run HelloWorld
+
