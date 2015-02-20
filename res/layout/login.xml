@@ -55,6 +55,7 @@ Log in page.
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_weight="1"/>
 
         <!-- replace with custom buttons -->
