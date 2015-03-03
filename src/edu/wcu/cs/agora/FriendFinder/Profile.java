@@ -30,11 +30,17 @@ public class Profile extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
-
+        String url = Constants.URL + "/user/" + 1;
 
         //get id of the user that was selected and add it to the url
-        user_id = savedInstanceState.getInt("user_id");
-        String url = Constants.URL + "/user/" + user_id;
+        /**
+        user_id = savedInstanceState.getInt("user_id", -1);
+        if (user_id != -1) {
+            url += user_id;
+        } else {
+            makeMessage("User is not in system");
+        }
+        */
 
         // Request the user's data from the server
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -85,7 +91,7 @@ public class Profile extends Activity implements View.OnClickListener {
             events.setText("");
             // get the id of the profile owner
             // get the list of people in the user's circle
-            String[] friends = getFriends();
+            //String[] friends = getFriends();
             id = response.getInt("id");
 
 
@@ -137,6 +143,7 @@ public class Profile extends Activity implements View.OnClickListener {
                 makeMessage("Group feature coming soon!");
                 break;
             case "Schedule":
+                makeMessage("Schedule feature coming soon!");
                 // pull up Google Calendar here
                 break;
             default:

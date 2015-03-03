@@ -27,12 +27,14 @@ public class Register extends Activity implements View.OnClickListener {
 
     Button signUpButton;
     private int user_id;
+    private boolean valid;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
         SSLCert.nuke();
+        valid = true;
 
         //Get the button from the layout
         signUpButton = (Button) findViewById(R.id.sign_up);
@@ -63,7 +65,7 @@ public class Register extends Activity implements View.OnClickListener {
             String url = Constants.URL + "/create/user/" + name + "/" + email +
                                                      "/" + pass + "/" + age;
             // Request a string response from the provided URL.
-            StringRequest request = new StringRequest(Request.Method.GET, url,
+/*            StringRequest request = new StringRequest(Request.Method.GET, url,
                     new Response.Listener() {
                         @Override
                         public void onResponse(Object obj) {
@@ -78,7 +80,8 @@ public class Register extends Activity implements View.OnClickListener {
             });
             // Add request to queue
             //Log.d("Connection", "Creating new user");
-            MySingleton.getInstance(this).addToRequestQueue(request);
+            MySingleton.getInstance(this).addToRequestQueue(request);*/
+
 
 
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -86,9 +89,16 @@ public class Register extends Activity implements View.OnClickListener {
                         @Override
                         public void onResponse(Object response) {
                             try {
-                                user_id = ((JSONObject) response).getInt("user_id");
+                                if (response != null) {
+                                    JSONObject user = (JSONObject) response;
+                                    user_id = user.getInt("id");
+                                } else {
+                                    makeMessage("Invalid: email is taken");
+                                    valid = false;
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                valid = false;
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -102,12 +112,14 @@ public class Register extends Activity implements View.OnClickListener {
             // Add request to queue
             MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
 
-            //continue to the home screen
-            Log.d("Moving on", "Going to home screen");
-            //Intent nextScreen = new Intent(this, Home.class);
-            Intent nextScreen = new Intent(this, Profile.class);
-            nextScreen.putExtra("user_id", user_id);
-            startActivity(nextScreen);
+            if (valid) {
+                //continue to the home screen
+                Log.d("Moving on", "Going to home screen");
+                //Intent nextScreen = new Intent(this, Home.class);
+                Intent nextScreen = new Intent(this, Profile.class);
+                nextScreen.putExtra("user_id", user_id);
+                startActivity(nextScreen);
+            }
 
         } else {
             Toast mismatch = Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT);
