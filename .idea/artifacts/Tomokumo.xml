@@ -3,16 +3,16 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Tomokumo</output-path>
     <properties id="android-properties">
       <options>
-        <option name="keyAlias" value="TomokumoKeystore" />
-        <option name="keyPassword" value="QHJ0a2V5cEBzcw==" />
-        <option name="keyStorePassword" value="QHJ0a2V5cEBzcw==" />
+        <option name="keyAlias" value="key" />
+        <option name="keyPassword" value="YW5kcm9pZA==" />
+        <option name="keyStorePassword" value="YW5kcm9pZA==" />
         <option name="keyStoreUrl" value="file://$PROJECT_DIR$/res/raw/keystore.jks" />
         <option name="proGuardCfgFiles">
           <list>
             <option value="file:///opt/android-sdk-update-manager/tools/proguard/proguard-android.txt" />
           </list>
         </option>
-        <option name="signingMode" value="DEBUG" />
+        <option name="signingMode" value="DEBUG_WITH_CUSTOM_CERTIFICATE" />
       </options>
     </properties>
     <root id="archive" name="Tomokumo.apk">
