@@ -90,7 +90,7 @@ public class Login extends android.accounts.AccountAuthenticatorActivity impleme
                 //Intent nextScreen = new Intent(this, Home.class);
                 // Currently going to profile for testing
                 Intent nextScreen = new Intent(this, Profile.class);
-                nextScreen.putExtra("user_id", user_id);
+                //nextScreen.putExtra("user_id", user_id);
                 startActivity(nextScreen);
             }
         }

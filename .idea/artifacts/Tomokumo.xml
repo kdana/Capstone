@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="apk" name="Tomokumo">
+    <output-path>$PROJECT_DIR$/out/artifacts/Tomokumo</output-path>
+    <properties id="android-properties">
+      <options>
+        <option name="keyAlias" value="TomokumoKeystore" />
+        <option name="keyPassword" value="QHJ0a2V5cEBzcw==" />
+        <option name="keyStorePassword" value="QHJ0a2V5cEBzcw==" />
+        <option name="keyStoreUrl" value="file://$PROJECT_DIR$/res/raw/keystore.jks" />
+        <option name="proGuardCfgFiles">
+          <list>
+            <option value="file:///opt/android-sdk-update-manager/tools/proguard/proguard-android.txt" />
+          </list>
+        </option>
+        <option name="signingMode" value="DEBUG" />
+      </options>
+    </properties>
+    <root id="archive" name="Tomokumo.apk">
+      <element id="android-final-package" facet="Tomokumo/android/Android" />
+    </root>
+  </artifact>
+</component>
