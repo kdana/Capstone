@@ -43,7 +43,7 @@ public class Register extends Activity implements View.OnClickListener {
     }
 
     public void makeMessage(String message) {
-        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -107,11 +107,13 @@ public class Register extends Activity implements View.OnClickListener {
                         public void onErrorResponse(VolleyError error) {
                             makeMessage("Error: Could not connect to server");
                             Log.e("Server Error", error.getMessage());
+                            valid = false;
                         }
                     });
             // Add request to queue
             MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
 
+            /**
             if (valid) {
                 //continue to the home screen
                 Log.d("Moving on", "Going to home screen");
@@ -120,11 +122,19 @@ public class Register extends Activity implements View.OnClickListener {
                 nextScreen.putExtra("user_id", user_id);
                 startActivity(nextScreen);
             }
+            */
+
+            if (valid) {
+                //finish here
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
+            }
 
         } else {
             Toast mismatch = Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT);
             mismatch.show();
         }
-        //finish here
+
     }
 }

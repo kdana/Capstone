@@ -5,8 +5,11 @@ import com.google.android.gms.maps.model.LatLng;
 import edu.wcu.cs.agora.FriendFinder.Authentication.ServerAuthentication;
 
 public class Constants {
+    public static final int    REQUEST_CODE_PICK_ACCOUNT = 1000;
+    public static final int    REQUEST_SIGNUP = 1;
+    public static final String SCOPE = "audience:server:client_id:908000618400-gm89ngk9va6106mn462lgmr3js36b6m4.apps.googleusercontent.com";
     public static final LatLng CULLOWHEE = new LatLng(35.3113624, -83.1819903);
-    public static final int MAP_ZOOM = 13;
+    public static final int    MAP_ZOOM = 13;
     public static final String PREFERENCES_NAME = "Preferences";
     public static final String ARG_USER_PASS = "password";
     public static final String ARG_ADDING_NEW_ACCOUNT = "new account";
