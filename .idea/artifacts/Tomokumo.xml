@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="apk" name="Tomokumo">
+  <artifact type="apk" build-on-make="true" name="Tomokumo">
     <output-path>$PROJECT_DIR$/out/artifacts/Tomokumo</output-path>
     <properties id="android-properties">
       <options>
