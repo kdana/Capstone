@@ -14,7 +14,7 @@ Log in page.
               android:layout_height="match_parent"
               android:weightSum="8"
               android:padding="20dp"
-              android:background="@color/lt_green">
+              android:background="@color/blue">
 
         <TextView
                 android:layout_width="match_parent"
@@ -34,13 +34,15 @@ Log in page.
                 android:ems="10"
                 android:background="@color/white"
                 android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:id="@+id/email"
                 android:layout_margin="10dp"
                 android:hint="@string/email"
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:alpha="0.23"/>
 
         <EditText
                 android:layout_width="match_parent"
@@ -48,6 +50,7 @@ Log in page.
                 android:inputType="textPassword"
                 android:background="@color/white"
                 android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:ems="10"
                 android:id="@+id/pass"
                 android:layout_margin="10dp"
@@ -55,7 +58,8 @@ Log in page.
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:alpha="0.23"/>
 
         <!-- replace with custom buttons -->
         <Button
@@ -80,8 +84,20 @@ Log in page.
                 android:textColorHint="@color/dk_grey"
                 android:singleLine="true"
                 android:ellipsize="start"
-                android:gravity="center"
-                android:layout_weight="1"/>
+                android:gravity="bottom|center"
+                android:layout_weight="0.6"/>
+
+        <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:text="@string/sign_up"
+                android:gravity="top|center"
+                android:textColor="@color/dk_grey"
+                android:ems="10"
+                android:onClick="onClick"
+                android:singleLine="true"
+                android:clickable="true"
+                android:linksClickable="true"/>
 
         <!-- replace with custom buttons -->
         <Button

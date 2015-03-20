@@ -11,9 +11,9 @@ File containing various available colors. The color scheme is not set yet.
     <color name="gold">#C1A875</color>
 
     <color name="black">#000000</color>
-    <color name="blue">#222266</color>
-    <color name="lt_blue">#4444cc</color>
-    <color name="dk_blue">#111133</color>
+    <color name="blue">#ff79aed0</color>
+    <color name="lt_blue">#ffc5e1f3</color>
+    <color name="dk_blue">#ff143771</color>
     <color name="red">#662222</color>
     <color name="lt_red">#CC4444</color>
     <color name="dk_red">#331111</color>
