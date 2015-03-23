@@ -10,7 +10,7 @@ User profile editing page.
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="10"
-    android:background="@color/lt_green"
+    android:background="@color/blue"
     android:padding="20dp">
 
 

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.AccountPicker;
 import edu.wcu.cs.agora.FriendFinder.Authentication.AccountAuthenticator;
@@ -28,7 +29,8 @@ import edu.wcu.cs.agora.FriendFinder.Authentication.GetTokenTask;
 public class Login extends AccountAuthenticatorActivity implements View.OnClickListener
 {
     private Button loginButton;
-    private Button registerButton;
+    private Button googleButton;
+    private TextView registerButton;
     private boolean valid;
     private String email;
     private AccountManager accountManager;
@@ -48,12 +50,12 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
 
         //get the login and register buttons from the layout
         loginButton    = (Button) findViewById(R.id.login);
-        registerButton = (Button) findViewById(R.id.register);
-        //googleButton   = (Button) findViewById(R.id.google);
+        registerButton = (TextView) findViewById(R.id.register);
+        googleButton   = (Button) findViewById(R.id.google);
         //set handler for login and register buttons to be this class
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
-        //googleButton.setOnClickListener(this);
+        googleButton.setOnClickListener(this);
     }
 
     @Override
@@ -65,11 +67,13 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
 
         //} else if (view.getId() == R.id.googleButton) {
             //googleSignIn();
-        } else {
+        } else if (view.getId() == R.id.register){
             Intent register = new Intent(this, Register.class);
             //register.putExtras(getIntent().getExtras());
             //startActivity(register);
             startActivityForResult(register, Constants.REQUEST_SIGNUP);
+        } else if (view.getId() == R.id.google) {
+            googleSignIn();
         }
     }
 
@@ -154,7 +158,7 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
     }
 
     private void getToken(String accountType, String authTokenType) {
-        //accountManager.getAuthToken()
+        accountManager.getAuthToken(this, authTokenType, null, this, nextActivity(), this);
 
         final AccountManagerFuture<Bundle> future =
                 accountManager.getAuthTokenByFeatures(accountType, authTokenType, null, this, null,
