@@ -27,7 +27,7 @@ String reference file.
 
     <string name="event_priv_settings">Make Events Attending Public</string>
 
-    <string name="key">AIzaSyANvTxkYoSOzfBbdflsx-otMQbYmN3MW7w</string>
+    <string name="key">AIzaSyDH7vHUVd0T852u98Ymq0W4T54kGydlqGE</string>
 
     <string name="eventname">Event Name</string>
     <string name="timedate">Time/Date filler</string>
@@ -42,3 +42,4 @@ String reference file.
 
 </resources>
 
+<!-- old key: AIzaSyANvTxkYoSOzfBbdflsx-otMQbYmN3MW7w -->

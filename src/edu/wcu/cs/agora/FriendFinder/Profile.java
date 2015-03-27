@@ -1,9 +1,16 @@
 package edu.wcu.cs.agora.FriendFinder;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,10 +32,17 @@ public class Profile extends Activity implements View.OnClickListener {
 
     private String[] friends;
     private int user_id;
+    private Button schedule;
+    private Button profileButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        schedule = (Button) findViewById(R.id.schedule);
+        profileButton = (Button) findViewById(R.id.profileButton);
+        schedule.setOnClickListener(this);
+        profileButton.setOnClickListener(this);
 
         String url = Constants.URL + "/user/" + 1;
 
@@ -73,8 +87,6 @@ public class Profile extends Activity implements View.OnClickListener {
         TextView likes = (TextView) findViewById(R.id.likes);
         TextView dislikes = (TextView) findViewById(R.id.dislikes);
         TextView events = (TextView) findViewById(R.id.events);
-        Button schedule = (Button) findViewById(R.id.schedule);
-        Button profileButton = (Button) findViewById(R.id.profileButton);
         ImageView picture = (ImageView) findViewById(R.id.picture);
 
         //unset user id
@@ -105,10 +117,6 @@ public class Profile extends Activity implements View.OnClickListener {
             makeMessage("Could not display user data");
             e.printStackTrace();
         }
-
-        // Set this class to be the handler for button presses
-        schedule.setOnClickListener(this);
-        profileButton.setOnClickListener(this);
 
         String text = "";
         switch (type) {
@@ -143,12 +151,26 @@ public class Profile extends Activity implements View.OnClickListener {
                 makeMessage("Group feature coming soon!");
                 break;
             case "Schedule":
-                makeMessage("Schedule feature coming soon!");
-                // pull up Google Calendar here
+                //makeMessage("Schedule feature coming soon!");
+                calendar();
                 break;
             default:
                 makeMessage("Stop that!");
         }
+    }
+
+    private void calendar() {
+        // Run query
+        Cursor cur = null;
+        ContentResolver cr = getContentResolver();
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+        String[] selectionArgs = new String[] {"sampleuser@gmail.com", "com.google",
+                "sampleuser@gmail.com"};
+        // Submit the query and get a Cursor object back.
+        cur = cr.query(uri, Constants.EVENT_PROJECTION, selection, selectionArgs, null);
     }
 
     public String[] getFriends() {
@@ -171,5 +193,45 @@ public class Profile extends Activity implements View.OnClickListener {
         // Add request to queue
         MySingleton.getInstance(this).addToRequestQueue(request);
         return friends;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.createEventMenuButton:
+                intent = new Intent(this, EventsPage.class);
+                startActivity(intent);
+                return true;
+            case R.id.searchMenuButton:
+                //intent = new Intent(this, Search.class);
+                //startActivity(intent);
+                return true;
+            case R.id.viewProfileMenuButton:
+                intent = new Intent(this, Profile.class);
+                startActivity(intent);
+                return true;
+            case R.id.settingsMenuButton:
+                intent = new Intent(this, Settings.class);
+                startActivity(intent);
+                return true;
+            case R.id.logOutMenuButton:
+                //TODO: invalidate token and remove from authenticator
+                return true;
+            case R.id.mapMenuButton:
+                intent = new Intent(this, Map.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

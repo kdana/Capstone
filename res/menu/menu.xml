@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Karen Dana
+Last Updated: 09/29/14
+Menu xml.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/createEventMenuButton"
+        android:title="Create an Event" />
+    <item android:id="@+id/searchMenuButton"
+        android:title="Search" />
+    <item android:id="@+id/viewProfileMenuButton"
+        android:title="View Profile" />
+    <item android:id="@+id/settingsMenuButton"
+        android:title="Settings" />
+    <item android:id="@+id/mapMenuButton"
+        android:title="Map" />
+    <item android:id="@+id/logOutMenuButton"
+        android:title="Log Out" />
+</menu>

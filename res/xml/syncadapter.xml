@@ -2,7 +2,7 @@
 
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
               android:contentAuthority="@string/authority"
-              android:accountType="edu.wcu"
+              android:accountType="edu.tomokumo.wcu"
               android:userVisible="false"
               android:supportsUploading="true"
               android:allowParallelSyncs="false"

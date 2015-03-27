@@ -1,8 +1,10 @@
 package edu.wcu.cs.agora.FriendFinder;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
+import edu.wcu.cs.agora.FriendFinder.Authentication.ServerAuthentication;
 import edu.wcu.cs.agora.FriendFinder.Networking.MySingleton;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +28,7 @@ import org.json.JSONObject;
 
 public class Register extends Activity implements View.OnClickListener {
 
-    Button signUpButton;
-    private int user_id;
+    private Button signUpButton;
     private boolean valid;
 
     @Override
@@ -48,93 +50,85 @@ public class Register extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        //get the input from the edit texts in the layout
-        String email       = ((EditText) findViewById(R.id.email)).getText().toString();
-        String pass        = ((EditText) findViewById(R.id.pass)).getText().toString();
-        String confirmPass = ((EditText) findViewById(R.id.repeat_pass)).getText().toString();
+    public void onClick(View view) {
+        String email       = ((EditText) findViewById(R.id.email)).getText().toString().trim();
+        String pass        = ((EditText) findViewById(R.id.pass)).getText().toString().trim();
+        String confirmPass = ((EditText) findViewById(R.id.repeat_pass)).getText().toString().trim();
 
-        //make sure the passwords are the same
-        if (pass.equals(confirmPass)) {
-            //send data to server to create user
-            //Log.d("Java", "Splitting email by @ sign");
-            String name = email.split("@")[0];
-            int age = 99;
-
-            // url to request response from
-            String url = Constants.URL + "/create/user/" + name + "/" + email +
-                                                     "/" + pass + "/" + age;
-            // Request a string response from the provided URL.
-/*            StringRequest request = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener() {
-                        @Override
-                        public void onResponse(Object obj) {
-                            makeMessage("Response: " + (String) obj);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    makeMessage("Error: Could not connect to server");
-                    Log.e("Server Error", error.getMessage());
-                }
-            });
-            // Add request to queue
-            //Log.d("Connection", "Creating new user");
-            MySingleton.getInstance(this).addToRequestQueue(request);*/
-
-
-
-            JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                    (Request.Method.GET, url, null, new Response.Listener() {
-                        @Override
-                        public void onResponse(Object response) {
-                            try {
-                                if (response != null) {
-                                    JSONObject user = (JSONObject) response;
-                                    user_id = user.getInt("id");
-                                } else {
-                                    makeMessage("Invalid: email is taken");
-                                    valid = false;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                valid = false;
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            makeMessage("Error: Could not connect to server");
-                            Log.e("Server Error", error.getMessage());
-                            valid = false;
-                        }
-                    });
-            // Add request to queue
-            MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
-
-            /**
-            if (valid) {
-                //continue to the home screen
-                Log.d("Moving on", "Going to home screen");
-                //Intent nextScreen = new Intent(this, Home.class);
-                Intent nextScreen = new Intent(this, Profile.class);
-                nextScreen.putExtra("user_id", user_id);
-                startActivity(nextScreen);
+        if (view.getId() == R.id.sign_up) {
+            // make sure the required fields are not empty
+            if (TextUtils.isEmpty(email)) {
+                makeMessage("Please enter your email address.");
+            } else if (TextUtils.isEmpty(pass)) {
+                makeMessage("Please enter your password.");
+            } else if (TextUtils.isEmpty(confirmPass)) {
+                makeMessage("Please confirm your password.");
+            } else if (!pass.equals(confirmPass)) {
+                makeMessage("Passwords do not match.");
+            } else {
+                // if all the information is entered, create the account
+                createAccount(email, pass);
             }
-            */
+        }
+    }
 
-            if (valid) {
+    public void createAccount(String email, String pass) {
+        // make sure the chosen email is not currently in use
+        boolean valid = isFree(email);
+
+        if (valid) {
+            String token = ServerAuthentication.signUp(email, pass,
+                                                       Constants.AUTHTOKEN_TYPE_FULL_ACCESS, this);
+            if (token != null) {
                 //finish here
                 Intent intent = new Intent();
+                intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
+                intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+                intent.putExtra(AccountManager.KEY_AUTHTOKEN, token);
+                intent.putExtra(Constants.ARG_USER_PASS, pass);
                 setResult(RESULT_OK, intent);
                 finish();
+            } else {
+                makeMessage("Error processing request");
             }
-
         } else {
-            Toast mismatch = Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT);
-            mismatch.show();
+            makeMessage("Email address currently in use");
         }
+    }
 
+    private boolean isFree(String email) {
+        // email is free unless proven otherwise
+        valid = true;
+        // link to retrieve the user with the given email
+        String url = Constants.URL + "/user/email/" + email;
+
+        // send a request for a JSON object representation of a user
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // if the user exists, the email is taken
+                        if (response != null) {
+                            valid = false;
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        makeMessage("Error: Could not connect to server");
+                        Log.e("Server Error", error.getMessage());
+                        valid = false;
+                    }
+                });
+
+        // Add request to queue
+        MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+        return valid;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

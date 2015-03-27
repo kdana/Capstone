@@ -50,6 +50,7 @@ Dynamically generated page representing an event.
             <!-- Placeholder for maps icon -->
         <Button
                 android:layout_width="0dp"
+                android:id="@+id/mapButton"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginLeft="1dp"

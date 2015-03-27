@@ -34,6 +34,8 @@ Permissions.
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
@@ -53,15 +55,8 @@ Permissions.
         <activity android:name=".Profile"/>
         <activity android:name=".Home"/>
         <activity android:name=".Privacy"/>
+        <activity android:name=".Map"/>
         <activity android:name=".EventsPage"/>
-
-        <service android:name="edu.wcu.cs.agora.FriendFinder.Authentication.AuthenticatorService">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator"
-                       android:resource="@xml/authenticator" />
-        </service>
 
         <service
                 android:name="edu.wcu.cs.agora.FriendFinder.SyncService"
@@ -73,16 +68,6 @@ Permissions.
             </intent-filter>
             <meta-data android:name="android.content.SyncAdapter"
                        android:resource="@xml/syncadapter" />
-        </service>
-
-        <service android:name=".Authentication.GenericAccountService">
-            <!-- Required filter used by the system to launch our account service. -->
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <!-- This points to an XMLf ile which describes our account service. -->
-            <meta-data android:name="android.accounts.AccountAuthenticator"
-                      android:resource="@xml/authenticator" />
         </service>
 
         <service android:name=".Authentication.AuthenticatorService">

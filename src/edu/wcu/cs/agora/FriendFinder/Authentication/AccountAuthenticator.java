@@ -51,19 +51,18 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
         // Extract the username and password from the Account Manager, and ask
         // the server for an appropriate AuthToken.
-        final AccountManager am = AccountManager.get(context);
+        final AccountManager manager = AccountManager.get(context);
 
-        String authToken = am.peekAuthToken(account, authTokenType);
+        String authToken = manager.peekAuthToken(account, authTokenType);
 
         // Lets give another try to authenticate the user
         if (TextUtils.isEmpty(authToken)) {
-            final String password = am.getPassword(account);
+            final String password = manager.getPassword(account);
             if (password != null) {
-                try {
-                    authToken = Constants.server.signIn(account.name, password, authTokenType);
-                } catch (Exception e) {
-                    Log.e("Error", "Error occurred while trying to sign in " + e.getMessage());
-                    e.printStackTrace();
+                authToken = Constants.server.signIn(account.name, password, authTokenType, context);
+
+                if (authToken == null) {
+                    Log.e("Error", "Error occurred while trying to sign in ");
                 }
             }
         }
@@ -77,9 +76,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             return result;
         }
 
-        // If we get here, then we couldn't access the user's password - so we
-        // need to re-prompt them for their credentials. We do that by creating
-        // an intent to display our AuthenticatorActivity.
+        /* If we get here, then we couldn't access the user's password - so we
+           need to re-prompt them for their credentials. We do that by creating
+           an intent to display our AuthenticatorActivity. */
         final Intent intent = new Intent(context, Login.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(Constants.ARG_ACCOUNT_TYPE, account.type);

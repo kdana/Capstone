@@ -8,7 +8,11 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.AccountPicker;
 import edu.wcu.cs.agora.FriendFinder.Authentication.AccountAuthenticator;
 import edu.wcu.cs.agora.FriendFinder.Authentication.GetTokenTask;
+import edu.wcu.cs.agora.FriendFinder.Authentication.ServerAuthentication;
 
 /**
  * Tyler Allen
@@ -31,7 +36,6 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
     private Button loginButton;
     private Button googleButton;
     private TextView registerButton;
-    private boolean valid;
     private String email;
     private AccountManager accountManager;
 
@@ -43,15 +47,17 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("LOGIN", "OnCreate");
+        // set the current layout to be the login screen
         setContentView(R.layout.login);
         SSLCert.nuke();
-        valid = true;
+        // get the account manager for this application
         accountManager = AccountManager.get(this);
 
         //get the login and register buttons from the layout
         loginButton    = (Button) findViewById(R.id.login);
         registerButton = (TextView) findViewById(R.id.register);
         googleButton   = (Button) findViewById(R.id.google);
+
         //set handler for login and register buttons to be this class
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
@@ -60,13 +66,10 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-
         if (view.getId() == R.id.login) {
             //request token from server
-            submit();
+            login();
 
-        //} else if (view.getId() == R.id.googleButton) {
-            //googleSignIn();
         } else if (view.getId() == R.id.register){
             Intent register = new Intent(this, Register.class);
             //register.putExtras(getIntent().getExtras());
@@ -82,30 +85,59 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
         toast.show();
     }
 
-    public void submit() {
-        // get username and password
-        this.email = ((EditText) findViewById(R.id.email)).getText().toString();
-        String password = ((EditText) findViewById(R.id.pass)).getText().toString();
-
-        getToken(Constants.ACCOUNT_TYPE, Constants.AUTHTOKEN_TYPE_FULL_ACCESS);
+    public void login() {
+        // get username and password from the screen
+        this.email = ((EditText) findViewById(R.id.email)).getText().toString().trim();
+        String password = ((EditText) findViewById(R.id.pass)).getText().toString().trim();
 
         // If email field is blank, ask them to input an email
-        if (email.equals("")) {
+        if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please enter your email address.", Toast.LENGTH_SHORT).show();
 
-        // password field is blank, ask them to input their password
-        } else if (password.equals("")){
+        // If password field is blank, ask them to input their password
+        } else if (TextUtils.isEmpty(password)){
             Toast.makeText(this, "Please enter your password.", Toast.LENGTH_LONG).show();
 
         } else {
-            googleSignIn();
-            // do validation here
-        
-            if (valid) {
-                //nextActivity();
+            String token = ServerAuthentication.signIn(email, password,
+                    Constants.ACCOUNT_TYPE, this);
+
+            if (token != null) {
+                Intent intent = new Intent();
+                intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
+                intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+                intent.putExtra(AccountManager.KEY_AUTHTOKEN, token);
+                intent.putExtra(Constants.ARG_USER_PASS, password);
+
+                finishLogin(intent);
+            } else {
+                makeMessage("Invalid Credentials");
             }
+
+        }
+    }
+
+    public void finishLogin(Intent intent) {
+        String name = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        String pass     = intent.getStringExtra(Constants.ARG_USER_PASS);
+        Account account = new Account(name, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
+
+        if (getIntent().getBooleanExtra(Constants.ARG_ADDING_NEW_ACCOUNT, false)) {
+            String token = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+            String tokenType = Constants.ACCOUNT_TYPE;
+            // Add account on device
+            accountManager.addAccountExplicitly(account, pass, null);
+            // Give token to account manager
+            accountManager.setAuthToken(account, tokenType, token);
+        } else {
+            accountManager.setPassword(account, pass);
         }
 
+        if (intent.getExtras() != null) {
+            setAccountAuthenticatorResult(intent.getExtras());
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     private void googleSignIn() {
@@ -121,9 +153,8 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_SIGNUP) {
-            addNewAccount(Constants.ACCOUNT_TYPE, Constants.AUTHTOKEN_TYPE_FULL_ACCESS);
-            nextActivity();
+        if (requestCode == Constants.REQUEST_SIGNUP && resultCode == RESULT_OK) {
+            finishLogin(data);
         }
 
         if (requestCode == Constants.REQUEST_CODE_PICK_ACCOUNT) {
@@ -131,7 +162,8 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
             if (resultCode == RESULT_OK) {
                 this.email = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                 // With the account name acquired, go get the auth token
-                getToken(Constants.ACCOUNT_TYPE, Constants.AUTHTOKEN_TYPE_FULL_ACCESS);
+                getGoogleToken();
+                makeMessage("Got the google token!");
             } else if (resultCode == RESULT_CANCELED) {
                 // The account picker dialog closed without selecting an account.
                 // Notify users that they must pick an account to proceed.
@@ -140,50 +172,7 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
         }
     }
 
-    private void addNewAccount(String accountType, String authTokenType) {
-        final AccountManagerFuture<Bundle> future = accountManager.addAccount(accountType, authTokenType,
-                null, null, this, new AccountManagerCallback<Bundle>() {
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-                        try {
-                            Bundle bundle = future.getResult();
-                            makeMessage("Account was created");
-                            Log.d("Add Account", "AddNewAccount Bundle is " + bundle);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            makeMessage(e.getMessage());
-                        }
-                    }
-                }, null);
-    }
-
-    private void getToken(String accountType, String authTokenType) {
-        accountManager.getAuthToken(this, authTokenType, null, this, nextActivity(), this);
-
-        final AccountManagerFuture<Bundle> future =
-                accountManager.getAuthTokenByFeatures(accountType, authTokenType, null, this, null,
-                null, new AccountManagerCallback<Bundle>() {
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-                        Bundle bnd = null;
-                        try {
-                            bnd = future.getResult();
-                            final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-                            makeMessage(((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"));
-                            Log.d("Getting Token", "GetTokenForAccount Bundle is " + bnd);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            makeMessage(e.getMessage());
-                        }
-                    }
-                }
-                , null);
-
-
-
-
-        /**
+    private void getGoogleToken() {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                                                   getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -192,7 +181,6 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
         } else {
             Toast.makeText(this, "Error: Unable to connect to network", Toast.LENGTH_SHORT);
         }
-         */
     }
 
     private void nextActivity() {
@@ -203,5 +191,45 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
         Intent nextScreen = new Intent(this, Profile.class);
         //nextScreen.putExtra("user_id", user_id);
         startActivity(nextScreen);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.createEventMenuButton:
+                intent = new Intent(this, EventsPage.class);
+                startActivity(intent);
+                return true;
+            case R.id.searchMenuButton:
+                //intent = new Intent(this, Search.class);
+                //startActivity(intent);
+                return true;
+            case R.id.viewProfileMenuButton:
+                intent = new Intent(this, Profile.class);
+                startActivity(intent);
+                return true;
+            case R.id.settingsMenuButton:
+                intent = new Intent(this, Settings.class);
+                startActivity(intent);
+                return true;
+            case R.id.logOutMenuButton:
+                //TODO: invalidate token and remove from authenticator
+                return true;
+            case R.id.mapMenuButton:
+                intent = new Intent(this, Map.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
