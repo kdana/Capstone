@@ -102,7 +102,9 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
             String token = ServerAuthentication.signIn(email, password,
                     Constants.ACCOUNT_TYPE, this);
 
-            if (token != null) {
+            if (token == null) {
+                makeMessage("Error: Could not connect to server");
+            } else if (!token.equals("error")) {
                 Intent intent = new Intent();
                 intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
                 intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
@@ -118,10 +120,11 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
     }
 
     public void finishLogin(Intent intent) {
-        String name = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        String name     = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         String pass     = intent.getStringExtra(Constants.ARG_USER_PASS);
         Account account = new Account(name, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
 
+        // if creating a new account
         if (getIntent().getBooleanExtra(Constants.ARG_ADDING_NEW_ACCOUNT, false)) {
             String token = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
             String tokenType = Constants.ACCOUNT_TYPE;
@@ -141,7 +144,6 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
     }
 
     private void googleSignIn() {
-
         // get all of the current google accounts in the system
         String[] accountTypes = new String[]{"com.google"};
         // Display a list view that lets the user choose or add a Google account to log in with
@@ -221,12 +223,12 @@ public class Login extends AccountAuthenticatorActivity implements View.OnClickL
                 intent = new Intent(this, Settings.class);
                 startActivity(intent);
                 return true;
-            case R.id.logOutMenuButton:
-                //TODO: invalidate token and remove from authenticator
-                return true;
             case R.id.mapMenuButton:
                 intent = new Intent(this, Map.class);
                 startActivity(intent);
+                return true;
+            case R.id.logOutMenuButton:
+                //TODO: invalidate token and remove from authenticator
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
